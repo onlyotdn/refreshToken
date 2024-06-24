@@ -225,28 +225,23 @@
             window.open(shareTokenURL, '_blank');
         }
 
-        function login() {
+        async function login() {
             if (!accessToken) {
                 alert('请先获取Access Token');
                 return;
             }
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = LOGIN_URL;
-            form.style.display = 'none';
-
-            const actionInput = document.createElement('input');
-            actionInput.name = 'action';
-            actionInput.value = 'token';
-            form.appendChild(actionInput);
-
-            const tokenInput = document.createElement('input');
-            tokenInput.name = 'access_token';
-            tokenInput.value = accessToken;
-            form.appendChild(tokenInput);
-
-            document.body.appendChild(form);
-            form.submit();
+            const response = await fetch(LOGIN_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                },
+                body: `action=token&access_token=${encodeURIComponent(accessToken)}`
+            });
+            if (response.ok) {
+                window.location.href = 'https://chat.onlyotdn.com';
+            } else {
+                alert('登录失败，请重试');
+            }
         }
     </script>
 </body>
